@@ -14,11 +14,17 @@ public class RegistrationController {
         this.registrationService = registrationService;
     }
 
-    @PostMapping("/register")
-        public String register(@RequestBody RegistrationRequest userRegistrationDto) {
-            System.out.println("registered user");
-            return registrationService.register(userRegistrationDto);
-        }
+    @PostMapping(path = "register")
+    public String register(@RequestBody RegistrationRequest userRegistrationDto) {
+        System.out.println("registered user");
+        return registrationService.register(userRegistrationDto);
     }
+
+    @GetMapping(path = "confirm")
+        public String confirm(@RequestParam("token") String token){
+
+        return registrationService.confirmToken(token);
+    }
+}
 
 

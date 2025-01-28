@@ -26,14 +26,16 @@ public class WebSecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
+                .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(authorize -> authorize
-                        .requestMatchers("/api/v*/registration/**").permitAll() // Allow all registration endpoints
-                        .anyRequest().authenticated() // Require authentication for other requests
-                )
-                .csrf(AbstractHttpConfigurer::disable); // Explicitly disable CSRF protection for APIs
+                        .requestMatchers("/api/v1/registration/**", "/error").permitAll() // Allow /error
+                        .anyRequest().authenticated()
+                );
 
         return http.build();
     }
+
+
 
     @Bean
     public AuthenticationManager authenticationManager(HttpSecurity http) throws Exception {

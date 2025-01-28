@@ -1,8 +1,7 @@
 package com.alessandro.book_finder_backend.appUser;
 
 import com.alessandro.book_finder_backend.registration.token.ConfirmationToken;
-import lombok.AllArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.alessandro.book_finder_backend.registration.token.ConfirmationTokenService;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -14,16 +13,16 @@ import java.util.UUID;
 
 @Service
 public class AppUserService implements UserDetailsService {
-
-
+    public AppUserService(AppUserRepository appUserRepository, BCryptPasswordEncoder bCryptPasswordEncoder, ConfirmationTokenService confirmationTokenService) {
+        this.appUserRepository = appUserRepository;
+        this.bCryptPasswordEncoder = bCryptPasswordEncoder;
+        this.confirmationTokenService = confirmationTokenService;
+    }
 
     private final AppUserRepository appUserRepository;
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
+    private final ConfirmationTokenService confirmationTokenService;
 
-    public AppUserService(AppUserRepository appUserRepository, BCryptPasswordEncoder bCryptPasswordEncoder) {
-        this.appUserRepository = appUserRepository;
-        this.bCryptPasswordEncoder = bCryptPasswordEncoder;
-    }
 
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
@@ -46,7 +45,19 @@ public class AppUserService implements UserDetailsService {
 
         String token = UUID.randomUUID().toString();
 
-        ConfirmationToken ConfirmationToken = new ConfirmationToken(token, LocalDateTime.now(),LocalDateTime.now().plusMinutes(15),appUser);
-        return "it works";
+        ConfirmationToken confirmationToken = new ConfirmationToken(token, LocalDateTime.now(),LocalDateTime.now().plusMinutes(15),appUser);
+        confirmationTokenService.saveConfirmationToken(confirmationToken);
+
+
+        return token;
     }
+
+
+    public void enableAppUser(String email) {
+        if(appUserRepository.findByEmail(email).isPresent()){
+            AppUser appUser = appUserRepository.findByEmail(email).get();
+            appUser.setLocked(false);
+            appUserRepository.save(appUser);
+    }
+}
 }

@@ -14,12 +14,12 @@ import org.springframework.security.core.userdetails.UserDetails;
 import java.util.Collection;
 import java.util.Collections;
 
-@Getter
-@Setter
+
 @EqualsAndHashCode
-@NoArgsConstructor
 @Entity
 public class AppUser implements UserDetails {
+
+
     @Id
     @SequenceGenerator(
             name = "appUser_sequence",
@@ -31,13 +31,22 @@ public class AppUser implements UserDetails {
             generator = "appUser_sequence"
     )
     private Long id;
-    private final String firstName;
-    private final String lastName;
-    private final String email;
+    private String firstName;
+    private String lastName;
+    private String email;
     private String password;
+
+    public String getEmail() {
+        return email;
+    }
+
     @Enumerated(EnumType.STRING)
-    private final AppUserRole appUserRole;
+    private AppUserRole appUserRole;
     private Boolean locked = false;
+
+    public void setLocked(Boolean locked) {
+        this.locked = locked;
+    }
 
     public AppUser(String firstName, String email, String lastName, String password, AppUserRole appUserRole, Boolean locked) {
         this.firstName = firstName;
@@ -46,6 +55,9 @@ public class AppUser implements UserDetails {
         this.password = password;
         this.appUserRole = appUserRole;
         this.locked = locked;
+    }
+
+    public AppUser() {
     }
 
     @Override
@@ -73,4 +85,6 @@ public class AppUser implements UserDetails {
     public void setPssword(String password) {
         this.password = password;
     }
+
+
 }

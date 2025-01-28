@@ -8,11 +8,14 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalDateTime;
-@Getter
+
 @Setter
 @AllArgsConstructor
-@NoArgsConstructor
+@Entity
 public class ConfirmationToken {
+
+    public ConfirmationToken() {
+    }
 
     @Id
     @SequenceGenerator(
@@ -37,6 +40,10 @@ public class ConfirmationToken {
 
     private LocalDateTime confirmedAt;
 
+    public void setConfirmedAt(LocalDateTime confirmedAt) {
+        this.confirmedAt = confirmedAt;
+    }
+
     @ManyToOne
     @JoinColumn(
             nullable = false,
@@ -44,10 +51,26 @@ public class ConfirmationToken {
     )
     private AppUser appUser;
 
+    public AppUser getAppUser() {
+        return appUser;
+    }
+
     public ConfirmationToken(String token, LocalDateTime createdAt, LocalDateTime expiredAt, AppUser appUser) {
         this.token = token;
         this.createdAt = createdAt;
         this.expiresAt = expiredAt;
         this.appUser = appUser;
+    }
+
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
+    }
+
+    public LocalDateTime getExpiresAt() {
+        return expiresAt;
+    }
+
+    public LocalDateTime getConfirmedAt() {
+        return confirmedAt;
     }
 }
