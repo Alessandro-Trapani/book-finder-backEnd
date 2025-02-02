@@ -1,25 +1,36 @@
 spring:
   datasource:
-    password: password
     url: jdbc:postgresql://localhost:5432/registration
     username: postgres
+    password: password
   jpa:
     hibernate:
-        ddl-auto: create-drop
+      ddl-auto: create-drop
     properties:
       hibernate:
         dialect: org.hibernate.dialect.PostgreSQLDialect
         format_sql: true
-      show-sql: true
+    show-sql: true
+
+  mail:
+    host: localhost
+    port: 1025
+    username: ""
+    password: ""
+    properties:
+      mail:
+        smtp:
+          auth: false
+          starttls:
+            enable: false
+
 logging:
   level:
-    org.springframework.security: DEBUG          # General Spring Security logging
-    org.springframework.security.web.access: DEBUG  # Logs access control decisions
-    org.springframework.security.authentication: DEBUG  # Authentication logging
-    org.springframework.security.web.authentication: DEBUG  # Shows authentication filter logs
-    org.springframework.security.config: DEBUG  # Shows Spring Security configuration details
+    org.springframework.security: DEBUG
+    org.springframework.security.web.access: DEBUG
+    org.springframework.security.authentication: DEBUG
+    org.springframework.security.web.authentication: DEBUG
+    org.springframework.security.config: DEBUG
     org.springframework.security.web.filter: TRACE
-    org:
-      hibernate:
-        SQL: DEBUG
-        type: TRACE
+    org.hibernate.SQL: DEBUG
+    org.hibernate.type: TRACE

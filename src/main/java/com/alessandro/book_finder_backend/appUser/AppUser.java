@@ -57,6 +57,10 @@ public class AppUser implements UserDetails {
         this.locked = locked;
     }
 
+    public AppUserRole getAppUserRole() {
+        return appUserRole == null ?  AppUserRole.USER : appUserRole;
+    }
+
     public AppUser() {
     }
 
@@ -87,4 +91,11 @@ public class AppUser implements UserDetails {
     }
 
 
+    public String getFirstName() {
+        return firstName;
+    }
+
+    public String getLastName() {
+        return lastName;
+    }
 }

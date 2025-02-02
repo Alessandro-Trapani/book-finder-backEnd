@@ -9,6 +9,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.UUID;
 
 @Service
@@ -26,8 +27,18 @@ public class AppUserService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
-        return appUserRepository.findByEmail(email).orElseThrow(() -> new UsernameNotFoundException("user with email " + email + " not found"));
+        // Find the user from the repository by email
+        AppUser appUser = appUserRepository.findByEmail(email)
+                .orElseThrow(() -> new UsernameNotFoundException("User with email " + email + " not found"));
+
+        // Return a UserDetails object, which Spring Security expects
+        return new org.springframework.security.core.userdetails.User(
+                appUser.getEmail(), // Use email as username
+                appUser.getPassword(), // Use password from AppUser
+                new ArrayList<>() // Authorities (can be added later, for now empty)
+        );
     }
+
 
 
     public String signUpUser(AppUser appUser){
