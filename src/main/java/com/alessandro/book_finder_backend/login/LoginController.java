@@ -33,7 +33,7 @@ public class LoginController {
 
 
     @PostMapping("")
-    public ResponseEntity<?> getJWTToken(@RequestBody LoginDto loginCredentials) throws Exception {
+    public ResponseEntity<?> getJWTToken(@RequestBody LoginDto loginCredentials){
         try {
             authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(loginCredentials.getEmail(), loginCredentials.getPassword())

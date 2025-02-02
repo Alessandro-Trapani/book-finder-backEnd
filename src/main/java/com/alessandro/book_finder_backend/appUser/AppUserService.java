@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Optional;
+import java.util.Set;
 import java.util.UUID;
 
 @Service
@@ -75,5 +76,25 @@ public class AppUserService implements UserDetailsService {
 
     public Optional<AppUser> findByEmail(String email) {
         return appUserRepository.findByEmail(email);
+    }
+
+    public void addBookToReadList(String email, String googleBookId) {
+        AppUser user = appUserRepository.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+        user.addReadBook(googleBookId);
+        appUserRepository.save(user);
+    }
+
+    public void removeBookFromReadList(String email, String googleBookId) {
+        AppUser user = appUserRepository.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+        user.removeReadBook(googleBookId);
+        appUserRepository.save(user);
+    }
+
+    public Set<String> getReadList(String email) {
+        AppUser user = appUserRepository.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+        return user.getReadBookIds();
     }
 }

@@ -13,6 +13,8 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashSet;
+import java.util.Set;
 
 
 @EqualsAndHashCode
@@ -35,6 +37,13 @@ public class AppUser implements UserDetails {
     private String lastName;
     private String email;
     private String password;
+    @ElementCollection(fetch = FetchType.EAGER)
+    @CollectionTable(
+            name = "user_read_books",
+            joinColumns = @JoinColumn(name = "user_id")
+    )
+    @Column(name = "google_book_id")
+    private Set<String> readBookIds = new HashSet<>();
 
     public String getEmail() {
         return email;
@@ -97,5 +106,36 @@ public class AppUser implements UserDetails {
 
     public String getLastName() {
         return lastName;
+    }
+
+    public Set<String> getReadBookIds() {
+        return readBookIds;
+    }
+
+    public void setReadBookIds(Set<String> readBookIds) {
+        this.readBookIds = readBookIds;
+    }
+
+    // You might also add helper methods:
+    public void addReadBook(String bookId) {
+        this.readBookIds.add(bookId);
+    }
+
+    public void removeReadBook(String bookId) {
+        this.readBookIds.remove(bookId);
+    }
+
+    @Override
+    public String toString() {
+        return "AppUser{" +
+                "id=" + id +
+                ", firstName='" + firstName + '\'' +
+                ", lastName='" + lastName + '\'' +
+                ", email='" + email + '\'' +
+                ", password='" + password + '\'' +
+                ", readBookIds=" + readBookIds +
+                ", appUserRole=" + appUserRole +
+                ", locked=" + locked +
+                '}';
     }
 }
