@@ -55,9 +55,9 @@ public class BookController {
 
 
     @GetMapping("/getBooks")
-    public ResponseEntity<?> getBooks(@RequestBody String email){
+    public ResponseEntity<?> getBooks(@RequestBody BookDto book){
         try{
-            Set<String> bookIds = bookService.getBooks(email);
+            Set<String> bookIds = bookService.getBooks(book.getEmail());
             return ResponseEntity.status(HttpStatus.OK)
                     .body(Map.of("books", bookIds));
         }catch (Exception e){

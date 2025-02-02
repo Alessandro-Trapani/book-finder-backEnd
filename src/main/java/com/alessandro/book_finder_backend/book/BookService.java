@@ -42,7 +42,7 @@ public class BookService {
 
     @Transactional(readOnly = true)
     public Set<String> getBooks(String email) {
-        String formattedEmail = email.trim().toLowerCase();
+        String formattedEmail = email.trim();
         AppUser user = appUserRepository.findByEmail(formattedEmail)
                 .orElseThrow(() -> new RuntimeException("User not found"));
 

@@ -34,7 +34,7 @@ public class RegistrationService {
        if(!isValidEmail){
            throw new IllegalStateException("email not valid");
        }
-       String email = request.getEmail().trim().toLowerCase();
+       String email = request.getEmail().trim();
         String token = appUserService.signUpUser(new AppUser(request.getFirstName(),email,request.getLastName(),request.getPassword(), AppUserRole.USER, true));
 
         emailSender.send(request.getEmail(),buildEmail(request.getFirstName(), "http://localhost:8080/api/v1/registration/confirm?token=" + token));
