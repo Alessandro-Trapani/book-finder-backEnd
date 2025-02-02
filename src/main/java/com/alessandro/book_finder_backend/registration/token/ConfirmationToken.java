@@ -3,8 +3,7 @@ package com.alessandro.book_finder_backend.registration.token;
 import com.alessandro.book_finder_backend.appUser.AppUser;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+
 import lombok.Setter;
 
 import java.time.LocalDateTime;

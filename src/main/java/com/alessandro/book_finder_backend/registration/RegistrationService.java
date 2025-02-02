@@ -3,6 +3,8 @@ import com.alessandro.book_finder_backend.appUser.AppUser;
 import com.alessandro.book_finder_backend.appUser.AppUserRole;
 import com.alessandro.book_finder_backend.appUser.AppUserService;
 import com.alessandro.book_finder_backend.email.EmailSender;
+import com.alessandro.book_finder_backend.exception.EmailAlreadyConfirmedException;
+import com.alessandro.book_finder_backend.exception.TokenExpiredException;
 import com.alessandro.book_finder_backend.registration.token.ConfirmationToken;
 import com.alessandro.book_finder_backend.registration.token.ConfirmationTokenService;
 import jakarta.transaction.Transactional;
@@ -42,13 +44,13 @@ public class RegistrationService {
         ConfirmationToken confirmationToken = confirmationTokenService.getToken(token).orElseThrow(() -> new IllegalStateException("token not found"));
 
         if(confirmationToken.getConfirmedAt() != null){
-            throw new IllegalStateException("email already confirmed");
+            throw new EmailAlreadyConfirmedException("email already confirmed");
 
            }
         LocalDateTime expiredAt = confirmationToken.getExpiresAt();
 
         if(expiredAt.isBefore(LocalDateTime.now())){
-            throw new IllegalStateException("token expired");
+            throw new TokenExpiredException("token expired");
 
         }
 

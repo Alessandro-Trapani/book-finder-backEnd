@@ -1,8 +1,14 @@
 package com.alessandro.book_finder_backend.registration;
 
+import com.alessandro.book_finder_backend.exception.EmailAlreadyConfirmedException;
+import com.alessandro.book_finder_backend.exception.TokenExpiredException;
 import lombok.AllArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.Map;
 
 @RestController
 @RequestMapping(path = "api/v1/registration")
@@ -15,16 +21,35 @@ public class RegistrationController {
     }
 
     @PostMapping(path = "register")
-    public String register(@RequestBody RegistrationRequest userRegistrationDto) {
-        System.out.println("registered user");
-        return registrationService.register(userRegistrationDto);
+    public ResponseEntity<?> register( @RequestBody RegistrationRequest userRegistrationDto) {
+        try{
+           String token =  registrationService.register(userRegistrationDto);
+           return ResponseEntity.ok(token);
+        }catch (IllegalStateException e){
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(Map.of("error", "Invalid email address. Please provide a valid email."));
+
+        }
+
     }
 
     @GetMapping(path = "confirm")
-        public String confirm(@RequestParam("token") String token){
+    public ResponseEntity<?> confirm(@RequestParam("token") String token) {
+        try {
 
-        return registrationService.confirmToken(token);
+            String confirmation = registrationService.confirmToken(token);
+            return ResponseEntity.ok(confirmation);
+        } catch (EmailAlreadyConfirmedException e) {
+
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(Map.of("error", "Email already confirmed."));
+        } catch (TokenExpiredException e) {
+
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(Map.of("error", "Token expired. Please request a new confirmation email."));
+        }
     }
+
 }
 
 
