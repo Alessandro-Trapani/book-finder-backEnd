@@ -27,7 +27,7 @@ public class RegistrationController {
         try{
            String token =  registrationService.register(userRegistrationDto);
             return ResponseEntity.status(HttpStatus.OK)
-                    .body(Map.of("token", token));
+                    .body(Map.of("confirmation", "check your email!"));
         }catch (IllegalStateException e){
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                     .body(Map.of("error", "Invalid email address. Please provide a valid email."));
