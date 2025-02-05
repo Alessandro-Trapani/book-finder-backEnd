@@ -17,6 +17,7 @@ import java.util.UUID;
 @Service
 public class AppUserService implements UserDetailsService {
     public AppUserService(AppUserRepository appUserRepository, BCryptPasswordEncoder bCryptPasswordEncoder, ConfirmationTokenService confirmationTokenService) {
+        appUserRepository.save(new AppUser("ale","alessandro.trapani03@gmail.com","trapani",bCryptPasswordEncoder.encode("asdf"),AppUserRole.USER,false));
         this.appUserRepository = appUserRepository;
         this.bCryptPasswordEncoder = bCryptPasswordEncoder;
         this.confirmationTokenService = confirmationTokenService;
@@ -81,20 +82,20 @@ public class AppUserService implements UserDetailsService {
     public void addBookToReadList(String email, String googleBookId) {
         AppUser user = appUserRepository.findByEmail(email)
                 .orElseThrow(() -> new RuntimeException("User not found"));
-        user.addReadBook(googleBookId);
+        user.addFavBooks(googleBookId);
         appUserRepository.save(user);
     }
 
     public void removeBookFromReadList(String email, String googleBookId) {
         AppUser user = appUserRepository.findByEmail(email)
                 .orElseThrow(() -> new RuntimeException("User not found"));
-        user.removeReadBook(googleBookId);
+        user.removeFavBook(googleBookId);
         appUserRepository.save(user);
     }
 
     public Set<String> getReadList(String email) {
         AppUser user = appUserRepository.findByEmail(email)
                 .orElseThrow(() -> new RuntimeException("User not found"));
-        return user.getReadBookIds();
+        return user.getFavBooks();
     }
 }

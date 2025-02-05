@@ -2,7 +2,6 @@ package com.alessandro.book_finder_backend.login.jwt;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.security.Keys;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -20,8 +19,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     private static final String BEARER_PREFIX = "Bearer ";
 
     @Override
-    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
-            throws ServletException, IOException {
+    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)throws ServletException, IOException {
+
 
         // Step 1: Extract the JWT token from the Authorization header
         String token = extractTokenFromHeader(request);
@@ -57,10 +56,9 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     // Helper method to validate the JWT token
     private boolean isValidToken(String token) {
         try {
-            // Parse the JWT to ensure it's valid and not expired using the updated API
-            Jwts.parserBuilder()
+            // Parse the JWT to ensure it's valid and not expired
+            Jwts.parser()
                     .setSigningKey(SECRET_KEY)  // Use the same secret key as when generating the token
-                    .build()
                     .parseClaimsJws(token);  // If the token is invalid or expired, this will throw an exception
 
             return true;
@@ -72,12 +70,13 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     // Helper method to extract the username (subject) from the JWT
     private String getUsernameFromToken(String token) {
-        Claims claims = Jwts.parserBuilder()
+        Claims claims = Jwts.parser()
                 .setSigningKey(SECRET_KEY)  // Use the same secret key as when generating the token
-                .build()
                 .parseClaimsJws(token)
                 .getBody();
 
         return claims.getSubject();  // Extract the subject (username)
     }
+
+
 }

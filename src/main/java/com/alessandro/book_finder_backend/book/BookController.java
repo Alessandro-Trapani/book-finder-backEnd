@@ -4,6 +4,8 @@ import com.alessandro.book_finder_backend.book.BookService;
 import com.alessandro.book_finder_backend.exception.UserNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
@@ -23,7 +25,8 @@ public class BookController {
     public ResponseEntity<?> addBook(@RequestBody BookDto book) {
 
         try{
-            bookService.addBookToUser(book.getEmail(), book.getId());
+            String email = SecurityContextHolder.getContext().getAuthentication().getPrincipal().toString();
+            bookService.addBookToUser(email, book.getId());
             return ResponseEntity.status(HttpStatus.OK)
                     .body(Map.of("confirmation", "added correctly"));
         }catch (UserNotFoundException e){
@@ -38,7 +41,8 @@ public class BookController {
     @DeleteMapping("/remove")
     public ResponseEntity<?> removeBook(@RequestBody BookDto book) {
         try{
-            bookService.removeBookFromUser(book.getEmail(), book.getId());
+            String email = SecurityContextHolder.getContext().getAuthentication().getPrincipal().toString();
+            bookService.removeBookFromUser(email, book.getId());
             return ResponseEntity.status(HttpStatus.OK)
                     .body(Map.of("confirmation", "book deleted from favorites"));
         }catch (UserNotFoundException e){
@@ -54,10 +58,12 @@ public class BookController {
     }
 
 
+
     @GetMapping("/getBooks")
-    public ResponseEntity<?> getBooks(@RequestBody BookDto book){
+    public ResponseEntity<?> getBooks(){
         try{
-            Set<String> bookIds = bookService.getBooks(book.getEmail());
+            String email = SecurityContextHolder.getContext().getAuthentication().getPrincipal().toString();
+            Set<String> bookIds = bookService.getBooks(email);
             return ResponseEntity.status(HttpStatus.OK)
                     .body(Map.of("books", bookIds));
         }catch (Exception e){
@@ -66,4 +72,6 @@ public class BookController {
         }
 
     }
+
+
 }

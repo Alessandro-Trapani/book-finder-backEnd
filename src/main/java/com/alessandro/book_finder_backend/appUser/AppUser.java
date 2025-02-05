@@ -36,11 +36,11 @@ public class AppUser implements UserDetails {
     private String password;
     @ElementCollection(fetch = FetchType.EAGER)
     @CollectionTable(
-            name = "user_read_books",
+            name = "favourite_books",
             joinColumns = @JoinColumn(name = "user_id")
     )
     @Column(name = "google_book_id")
-    private Set<String> readBookIds = new HashSet<>();
+    private Set<String> favBooks = new HashSet<>();
 
     public String getEmail() {
         return email;
@@ -105,21 +105,21 @@ public class AppUser implements UserDetails {
         return lastName;
     }
 
-    public Set<String> getReadBookIds() {
-        return readBookIds;
+    public Set<String> getFavBooks() {
+        return favBooks;
     }
 
-    public void setReadBookIds(Set<String> readBookIds) {
-        this.readBookIds = readBookIds;
+    public void setFavBooks(Set<String> readBookIds) {
+        this.favBooks = readBookIds;
     }
 
-    // You might also add helper methods:
-    public void addReadBook(String bookId) {
-        this.readBookIds.add(bookId);
+
+    public void addFavBooks(String bookId) {
+        this.favBooks.add(bookId);
     }
 
-    public void removeReadBook(String bookId) {
-        this.readBookIds.remove(bookId);
+    public void removeFavBook(String bookId) {
+        this.favBooks.remove(bookId);
     }
 
     @Override
@@ -130,7 +130,7 @@ public class AppUser implements UserDetails {
                 ", lastName='" + lastName + '\'' +
                 ", email='" + email + '\'' +
                 ", password='" + password + '\'' +
-                ", readBookIds=" + readBookIds +
+                ", readBookIds=" + favBooks +
                 ", appUserRole=" + appUserRole +
                 ", locked=" + locked +
                 '}';

@@ -4,6 +4,7 @@ import com.alessandro.book_finder_backend.appUser.AppUserRole;
 import com.alessandro.book_finder_backend.appUser.AppUserService;
 import com.alessandro.book_finder_backend.email.EmailSender;
 import com.alessandro.book_finder_backend.exception.EmailAlreadyConfirmedException;
+import com.alessandro.book_finder_backend.exception.EmailAlreadyExistsException;
 import com.alessandro.book_finder_backend.exception.TokenExpiredException;
 import com.alessandro.book_finder_backend.registration.token.ConfirmationToken;
 import com.alessandro.book_finder_backend.registration.token.ConfirmationTokenService;
@@ -33,6 +34,9 @@ public class RegistrationService {
         boolean isValidEmail = emailValidator.test(request.getEmail());
        if(!isValidEmail){
            throw new IllegalStateException("email not valid");
+       }
+       if(appUserService.findByEmail(request.getEmail()).isPresent()){
+           throw new EmailAlreadyExistsException("email already exists in the database");
        }
        String email = request.getEmail().trim();
         String token = appUserService.signUpUser(new AppUser(request.getFirstName(),email,request.getLastName(),request.getPassword(), AppUserRole.USER, true));

@@ -1,6 +1,7 @@
 package com.alessandro.book_finder_backend.registration;
 
 import com.alessandro.book_finder_backend.exception.EmailAlreadyConfirmedException;
+import com.alessandro.book_finder_backend.exception.EmailAlreadyExistsException;
 import com.alessandro.book_finder_backend.exception.TokenExpiredException;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -9,6 +10,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
+
 
 @RestController
 @RequestMapping(path = "api/v1/registration")
@@ -25,10 +27,15 @@ public class RegistrationController {
         try{
            String token =  registrationService.register(userRegistrationDto);
             return ResponseEntity.status(HttpStatus.OK)
-                    .body(Map.of("confirmation", token));
+                    .body(Map.of("token", token));
         }catch (IllegalStateException e){
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                     .body(Map.of("error", "Invalid email address. Please provide a valid email."));
+
+        }
+        catch (EmailAlreadyExistsException e){
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(Map.of("error", "Email already exist."));
 
         }
 
@@ -40,7 +47,7 @@ public class RegistrationController {
 
             String confirmation = registrationService.confirmToken(token);
             return ResponseEntity.status(HttpStatus.OK)
-                    .body(Map.of("confirmation", token));
+                    .body(Map.of("token", token));
         } catch (EmailAlreadyConfirmedException e) {
 
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
