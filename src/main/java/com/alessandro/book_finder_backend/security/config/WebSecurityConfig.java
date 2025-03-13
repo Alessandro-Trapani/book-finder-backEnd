@@ -35,14 +35,14 @@ public class WebSecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-                .cors(cors -> cors.configurationSource(corsConfigurationSource()))  // Apply CORS settings
-                .csrf(AbstractHttpConfigurer::disable)  // Disable CSRF protection
+                .cors(cors -> cors.configurationSource(corsConfigurationSource())) 
+                .csrf(AbstractHttpConfigurer::disable)  
                 .authorizeHttpRequests(authorize -> authorize
-                        .requestMatchers("/api/v1/registration/**", "/error", "/api/v1/login/**").permitAll()  // Allow public access to registration, error, and login endpoints
-                        .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()  // Allow OPTIONS requests (for CORS preflight)
-                        .anyRequest().authenticated()  // Require authentication for all other requests
+                        .requestMatchers("/api/v1/registration/**", "/error", "/api/v1/login/**").permitAll() 
+                        .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
+                        .anyRequest().authenticated()  
                 )
-                .addFilterBefore(new JwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);  // Add JwtAuthenticationFilter before UsernamePasswordAuthenticationFilter
+                .addFilterBefore(new JwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);  
 
         return http.build();
     }
